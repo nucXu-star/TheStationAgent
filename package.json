@@ -1,0 +1,14 @@
+{
+  "name": "the-station-agent",
+  "version": "1.0.0",
+  "private": true,
+  "description": "The Station Agent - backend is Flask (Python). This package.json exists so deployment systems that expect Node package manifests don't fail.",
+  "scripts": {
+    "build": "echo \"No frontend build required\"",
+    "start": "python app.py"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
+
