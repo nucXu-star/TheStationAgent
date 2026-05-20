@@ -1,0 +1,688 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artemis - Secondary Page</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8f6f3;
+            --text-dark: #2a3132;
+            --text-blue: #0b1c40;
+            --primary-orange: #ff5900;
+            --text-gray: #5f6566;
+            --card-bg: #efebe5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            /* 使用 flex 布局让 footer 永远在最底部，即使中间内容很少 */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* =========================================
+           导航栏 (Navbar)
+           ========================================= */
+        .nav {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 48px;
+            background: transparent;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav a {
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-dark);
+            transition: color 0.2s;
+        }
+
+        .nav a:hover {
+            color: var(--primary-orange);
+        }
+
+        .nav-center {
+            text-align: center;
+        }
+
+        .nav-logo {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 24px;
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-style: italic;
+        }
+
+        /* =========================================
+           二级页面主体内容容器
+           ========================================= */
+        .page-content {
+            flex: 1;
+            /* 撑开剩余空间，把 footer 挤下去 */
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 60px 24px;
+        }
+
+        /* 这里可以写你二级页面特定内容的样式 */
+        .page-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 48px;
+            color: var(--text-blue);
+            font-style: italic;
+            margin-bottom: 24px;
+            text-align: center;
+        }
+
+        .page-desc {
+            text-align: center;
+            color: var(--text-gray);
+            font-size: 18px;
+        }
+
+        /* =========================================
+           表单样式
+           ========================================= */
+        .form-container {
+            max-width: 400px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 14px;
+        }
+
+        .form-group input {
+            padding: 12px 16px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: 'DM Sans', sans-serif;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--primary-orange);
+            box-shadow: 0 0 0 3px rgba(255, 89, 0, 0.1);
+        }
+
+        .submit-btn {
+            padding: 12px 24px;
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .submit-btn:hover {
+            background: #e64c00;
+        }
+
+        .submit-btn:active {
+            transform: scale(0.98);
+        }
+
+        .submit-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            min-height: 20px;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .form-footer {
+            text-align: center;
+            font-size: 14px;
+            color: var(--text-gray);
+        }
+
+        .form-footer a {
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .form-footer a:hover {
+            color: #e64c00;
+        }
+        .fixed-bottom-right {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+            z-index: 9999;
+        }
+
+        .framer-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            color: #333333;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .framer-badge:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        .music-player-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 12px;
+            color: #333333;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 8px;
+            width: 240px;
+            transition: transform 0.2s ease;
+        }
+
+        .music-player-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .music-icon {
+            width: 16px;
+            height: 16px;
+            background-image: url("/static/image/music.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .music-title {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            cursor: default;
+        }
+
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .music-controls button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: color 0.2s, transform 0.1s;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-controls button:hover {
+            color: var(--primary-orange);
+        }
+
+        .music-controls button:active {
+            transform: scale(0.9);
+        }
+
+        /* =================================-========
+           Footer 区域
+           ========================================= */
+        .footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 80px 24px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 16px;
+        }
+
+        .footer-logo {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 28px;
+            line-height: 1.2;
+            color: var(--primary-orange);
+            margin-bottom: 8px;
+        }
+
+        .footer-logo i {
+            color: var(--primary-orange);
+        }
+
+        .footer-center {
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        .footer-right {
+            font-size: 16px;
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-right:hover {
+            color: var(--text-dark);
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .nav {
+                padding: 24px;
+            }
+
+            .page-title {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="nav">
+        <div class="nav-left"><a href="/">Works</a></div>
+        <div class="nav-center"><a href="/" class="nav-logo">The Station&<br>Agent</a></div>
+        <div class="nav-right"><a href="/playground">Playground</a></div>
+    </nav>
+
+    <main class="page-content">
+        <h1 class="page-title">注册</h1>
+        <p class="page-desc">创建新账户，开启你的冒险之旅</p>
+
+        <div class="form-container">
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" name="username" placeholder="请输入用户名（至少3个字符）" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">邮箱地址</label>
+                    <input type="email" id="email" name="email" placeholder="请输入邮箱地址" required>
+                </div>
+                <div class="form-group">
+                <label for="verify_code">验证码</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="verify_code" name="verify_code" placeholder="请输入验证码" required style="flex: 1;">
+                    <button type="button" id="send_code_btn" onclick="sendCode()" style="white-space: nowrap;">获取验证码</button>
+                </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" name="password" placeholder="请输入密码（至少6个字符）" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password">确认密码</label>
+                    <input type="password" id="confirm_password" name="confirm_password" placeholder="请再次输入密码" required>
+                </div>
+
+                <button type="submit" class="submit-btn">注册</button>
+
+                <div id="message" class="message"></div>
+
+                <div class="form-footer">
+                    <p>已有账户？<a href="/login">立即登录</a></p>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <div class="fixed-bottom-right">
+        <div class="music-player-card">
+            <div class="music-info">
+                <div class="music-icon"></div>
+                <div class="music-title" id="musicTitle">...</div>
+            </div>
+            <div class="music-controls">
+                <button id="prevBtn" title="上一首">⏮</button>
+                <button id="playBtn" title="播放/暂停">▶</button>
+                <button id="nextBtn" title="下一首">⏭</button>
+            </div>
+            <audio id="audioPlayer" src=""></audio>
+        </div>
+
+        <a href="#" class="framer-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L24 12H12V24L0 12H12V0Z" />
+            </svg>
+            我有心事想对她说
+        </a>
+        <div class="floating-item stats-info">
+        在线人数：<span id="onlineCount">...</span>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-logo">
+            <i>The Station&</i> <br><i>Agent</i>
+        </div>
+        <div class="footer-center">© 2026</div>
+        <a href="#" class="footer-right">Designed by Neueframe</a>
+    </footer>
+
+    <script>
+        const musicList = [
+            '周杰伦-蒲公英的约定.flac',
+            '周杰伦-烟花易冷.flac',
+            'song3.mp3'
+        ];
+        const basePath = '/static/music/';
+        let currentIndex = Math.floor(Math.random() * musicList.length);
+
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const musicTitle = document.getElementById('musicTitle');
+
+        function loadMusic(index) {
+            const fileName = musicList[index];
+            audioPlayer.src = basePath + fileName;
+            const displayName = fileName.replace(/\.[^/.]+$/, "");
+            musicTitle.textContent = displayName;
+            musicTitle.title = displayName;
+        }
+
+        function playMusic() {
+            audioPlayer.play();
+            playBtn.textContent = '⏸';
+        }
+
+        function pauseMusic() {
+            audioPlayer.pause();
+            playBtn.textContent = '▶';
+        }
+
+        playBtn.addEventListener('click', () => {
+            if (audioPlayer.paused) {
+                playMusic();
+            } else {
+                pauseMusic();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + musicList.length) % musicList.length;
+            loadMusic(currentIndex);
+            playMusic();
+        });
+
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % musicList.length;
+            loadMusic(currentIndex);
+            playMusic();
+        });
+
+        audioPlayer.addEventListener('ended', () => {
+            nextBtn.click();
+        });
+
+        loadMusic(currentIndex);
+        // =========================================
+        // ✨ 在线人数统计逻辑
+        // =========================================
+
+        const onlineCountElement = document.getElementById('onlineCount');
+
+        async function fetchOnlineCount() {
+            if (!onlineCountElement) return; // 如果找不到元素就不执行
+
+            try {
+                // 请求你刚刚在 Flask 后端写好的 API
+                const response = await fetch('/api/online-users');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // 将获取到的数字更新到页面上
+                    onlineCountElement.textContent = data.online;
+                }
+            } catch (error) {
+                console.error('获取在线人数失败:', error);
+            }
+        }
+
+        // 页面刚加载时立刻获取一次
+        fetchOnlineCount();
+
+        // 设定定时器，每 15000 毫秒 (15秒) 悄悄向后端请求一次最新数据
+        setInterval(fetchOnlineCount, 15000);
+
+        // 页面加载时初始化
+        loadMusic(currentIndex);
+    </script>
+
+    <script>
+       // ==========================================
+// 1. 获取验证码逻辑 (移到全局作用域，解决 not defined 报错)
+// ==========================================
+function sendCode() {
+    // 确保这里的 ID 与你 HTML 中的邮箱输入框 ID 一致
+    const email = document.getElementById('email').value.trim();
+
+    // 简单的邮箱格式校验
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert("请输入有效的邮箱地址！");
+        return;
+    }
+
+    const btn = document.getElementById('send_code_btn');
+    btn.disabled = true; // 禁用按钮
+    let time = 60;
+
+    // 向后端发送请求触发邮件
+    fetch('/send-verification-code', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ email: email })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert("验证码已发送，请查收邮件。");
+            // 开启倒计时
+            let timer = setInterval(() => {
+                time--;
+                btn.innerText = `${time}秒后重试`;
+                if (time <= 0) {
+                    clearInterval(timer);
+                    btn.innerText = "获取验证码";
+                    btn.disabled = false;
+                }
+            }, 1000);
+        } else {
+            alert(data.message || "发送失败，请稍后重试。");
+            btn.disabled = false;
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        btn.disabled = false;
+    });
+}
+
+
+// ==========================================
+// 2. 注册表单处理逻辑
+// ==========================================
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById('username').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
+    const confirm_password = document.getElementById('confirm_password').value.trim();
+
+    // 【新增】：获取验证码输入框的值
+    const verify_code = document.getElementById('verify_code').value.trim();
+
+    const messageDiv = document.getElementById('message');
+    const submitBtn = document.querySelector('.submit-btn');
+
+    // 清空消息
+    messageDiv.textContent = '';
+    messageDiv.className = 'message';
+
+    // 验证输入 (【新增】：检查验证码是否填写)
+    if (!username || !email || !password || !confirm_password || !verify_code) {
+        messageDiv.textContent = '请填写所有字段（包括验证码）';
+        messageDiv.classList.add('error');
+        return;
+    }
+
+    if (username.length < 3) {
+        messageDiv.textContent = '用户名至少需要3个字符';
+        messageDiv.classList.add('error');
+        return;
+    }
+
+    if (password.length < 6) {
+        messageDiv.textContent = '密码至少需要6个字符';
+        messageDiv.classList.add('error');
+        return;
+    }
+
+    if (password !== confirm_password) {
+        messageDiv.textContent = '两次输入的密码不一致';
+        messageDiv.classList.add('error');
+        return;
+    }
+
+    // 禁用提交按钮
+    submitBtn.disabled = true;
+    submitBtn.textContent = '注册中...';
+
+    try {
+        const response = await fetch('/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                email: email,
+                password: password,
+                confirm_password: confirm_password,
+                verify_code: verify_code // 【新增】：将验证码发送给后端
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+            messageDiv.textContent = data.message;
+            messageDiv.classList.add('success');
+            setTimeout(() => {
+                window.location.href = data.redirect;
+            }, 1000);
+        } else {
+            messageDiv.textContent = data.message;
+            messageDiv.classList.add('error');
+            submitBtn.disabled = false;
+            submitBtn.textContent = '注册';
+        }
+    } catch (error) {
+        messageDiv.textContent = '请求失败：' + error.message;
+        messageDiv.classList.add('error');
+        submitBtn.disabled = false;
+        submitBtn.textContent = '注册';
+    }
+});
+    </script>

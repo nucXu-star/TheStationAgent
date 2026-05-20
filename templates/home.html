@@ -1,0 +1,1410 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Artemis - Framer Portfolio Replica</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8f6f3;
+            --text-dark: #2a3132;
+            --text-blue: #0b1c40;
+            --primary-orange: #ff5900;
+            --text-gray: #5f6566;
+            --card-bg: #efebe5;
+            --brand-blue: rgb(0, 22, 102);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--bg-color);
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* ----- 导航栏 ----- */
+        .nav {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px 48px;
+            background: transparent;
+            position: relative;
+            z-index: 10;
+        }
+
+        .nav a {
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: color 0.2s;
+            margin-right: 10px;
+        }
+
+        .nav a:hover {
+            color: var(--primary-orange);
+        }
+
+        .nav-center {
+            text-align: center;
+        }
+
+        .nav-logo {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 24px;
+            color: var(--primary-orange);
+            text-decoration: none;
+            font-style: italic;
+        }
+
+        /* ----- 动画定义 ----- */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: scale(0.7) rotate(0deg);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) rotate(var(--rot));
+            }
+        }
+
+        @keyframes floatUpDown {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-12px);
+            }
+        }
+
+        /* ----- Hero 首屏区域 ----- */
+
+        .hero-container {
+            position: relative;
+            max-width: 1200px;
+            margin: 0 auto;
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 24px 40px;
+        }
+
+        .hero-content {
+            text-align: center;
+            z-index: 2;
+            animation: fadeInUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .hero-label {
+            font-size: 18px;
+            display: block;
+            color: var(--text-dark);
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .hero-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 88px;
+            line-height: 1.1;
+            font-style: italic;
+            font-weight: 400;
+            color: var(--brand-blue, rgb(0, 22, 102));
+            margin-bottom: 24px;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+        }
+
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            background: var(--primary-orange);
+            color: #fff;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 50px;
+            padding: 16px 36px;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.2s;
+        }
+
+        .cta-btn:hover {
+            background: #e04e00;
+            transform: translateY(-2px);
+        }
+
+        .cta-btn span {
+            margin-left: 8px;
+            font-size: 18px;
+        }
+
+        /* 悬浮图片 */
+        .floating-img {
+            position: absolute;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+            z-index: 1;
+            opacity: 0;
+            animation: popIn 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            animation-delay: 0.3s;
+        }
+
+        .img-1 {
+            top: 15%;
+            left: 10%;
+            width: 220px;
+            height: 280px;
+            --rot: -12deg;
+        }
+
+        .img-2 {
+            top: 10%;
+            right: 15%;
+            width: 200px;
+            height: 260px;
+            --rot: 15deg;
+        }
+
+        .img-3 {
+            bottom: 10%;
+            left: 15%;
+            width: 250px;
+            height: 180px;
+            --rot: -8deg;
+        }
+
+        .img-4 {
+            bottom: 5%;
+            right: 20%;
+            width: 280px;
+            height: 220px;
+            --rot: 6deg;
+        }
+
+        /* ----- 过渡区域：望远镜图标 & Sneak Peak ----- */
+        .works-intro {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            margin: 60px auto 20px;
+            text-align: center;
+        }
+
+        .intro-icon {
+            width: 80px;
+            height: auto;
+            margin-bottom: 16px;
+        }
+
+        .intro-label {
+            font-family: 'Libre Baskerville', serif;
+            font-style: italic;
+            font-size: 22px;
+            color: var(--text-gray);
+        }
+
+        /* ----- 横向无限滚动作品画廊 ----- */
+        .marquee-container {
+            width: 100%;
+            overflow: hidden;
+            padding: 20px 0 60px;
+            position: relative;
+            display: flex;
+            background: var(--bg-color);
+        }
+
+        .marquee-container::before,
+        .marquee-container::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            width: 10%;
+            min-width: 100px;
+            height: 100%;
+            z-index: 5;
+            pointer-events: none;
+        }
+
+        .marquee-container::before {
+            left: 0;
+            background: linear-gradient(to right, var(--bg-color) 0%, transparent 100%);
+        }
+
+        .marquee-container::after {
+            right: 0;
+            background: linear-gradient(to left, var(--bg-color) 0%, transparent 100%);
+        }
+
+        .marquee-track {
+            display: flex;
+            flex-direction: row;
+            gap: 24px;
+            width: max-content;
+            align-items: flex-end;
+            will-change: transform;
+        }
+
+        .marquee-item {
+            width: 280px;
+            height: 380px;
+            border-radius: 16px;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), filter 0.4s ease;
+            cursor: pointer;
+        }
+
+        .marquee-track:hover .marquee-item {
+            filter: grayscale(30%) opacity(0.7);
+        }
+
+        .marquee-track .marquee-item:hover {
+            transform: scale(1.05) translateY(-10px);
+            filter: grayscale(0%) opacity(1);
+            z-index: 2;
+        }
+
+        /* ----- Works 作品集展示区域 ----- */
+        .works-section {
+            max-width: 1200px;
+            margin: 0 auto 100px;
+            padding: 0 24px;
+        }
+
+        .section-header {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .section-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 48px;
+            color: var(--brand-blue, rgb(0, 22, 102));
+            margin-bottom: 16px;
+            font-style: italic;
+            text-align: center;
+        }
+
+        .section-desc {
+            font-size: 20px;
+            color: var(--text-gray);
+            text-align: center;
+        }
+
+        .works-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 60px;
+        }
+
+        .work-item {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            background: transparent;
+            transition: transform 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .work-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .work-img-wrapper {
+            width: 100%;
+            height: 500px;
+            border-radius: 24px;
+            overflow: hidden;
+            background: #eee;
+            position: relative;
+        }
+
+        .work-img-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .work-item:hover .work-img-wrapper img {
+            transform: scale(1.03);
+        }
+
+        .work-info {
+            padding: 0 8px;
+        }
+
+        .work-info h3 {
+            font-size: 32px;
+            font-family: 'Libre Baskerville', serif;
+            margin-bottom: 12px;
+            color: var(--text-dark);
+        }
+
+        .work-info p {
+            font-size: 16px;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .work-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: #e8e6e3;
+            border-radius: 50px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        /* ----- 卡片堆叠效果 ----- */
+        .stack-container {
+            position: relative;
+            width: 760px;
+            height: 480px;
+            margin: 40px auto 0;
+            perspective: 1000px;
+            z-index: 2;
+            padding: 32px 0;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 32px;
+            box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 56px;
+            box-sizing: border-box;
+            color: white;
+            cursor: grab;
+            user-select: none;
+            transform-origin: center center;
+            transition: transform 0.5s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.5s ease, filter 0.5s ease;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .card:active {
+            cursor: grabbing;
+        }
+
+        .card h2 {
+            margin: 0;
+            font-size: 24px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .card p {
+            margin: 8px 0 0;
+            opacity: 0.8;
+            font-size: 14px;
+        }
+
+        .card[data-index="0"] {
+            z-index: 3;
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            filter: brightness(1);
+        }
+
+        .card[data-index="1"] {
+            z-index: 2;
+            transform: translateY(-20px) scale(0.94);
+            opacity: 0.9;
+            filter: brightness(0.8);
+        }
+
+        .card[data-index="2"] {
+            z-index: 1;
+            transform: translateY(-40px) scale(0.88);
+            opacity: 0.7;
+            filter: brightness(0.6);
+        }
+
+        .card[data-index="hidden"] {
+            z-index: 0;
+            transform: translateY(-60px) scale(0.8);
+            opacity: 0;
+        }
+
+        /* =========================================
+           FAQs 区域样式
+           ========================================= */
+        .faq-section {
+            max-width: 800px;
+            margin: 120px auto;
+            padding: 0 24px;
+            text-align: center;
+        }
+
+        .faq-header {
+            margin-bottom: 40px;
+        }
+
+        .faq-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 56px;
+            color: var(--brand-blue, rgb(0, 22, 102));
+            font-style: italic;
+            margin-bottom: 16px;
+        }
+
+        .faq-subtitle {
+            font-size: 18px;
+            color: var(--text-gray);
+        }
+
+        .faq-list {
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .faq-item {
+            background: var(--card-bg);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: background 0.3s;
+        }
+
+        .faq-question {
+            padding: 24px;
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .faq-icon {
+            font-size: 24px;
+            font-weight: 400;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-answer {
+            max-height: 0;
+            padding: 0 24px;
+            color: var(--text-gray);
+            line-height: 1.6;
+            opacity: 0;
+            transition: max-height 0.4s ease, padding 0.4s ease, opacity 0.4s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 200px;
+            padding-bottom: 24px;
+            opacity: 1;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        /* =========================================
+           Contact / Ready to build 区域 (竖着排列)
+           ========================================= */
+        .contact-section {
+            max-width: 800px;
+            /* 宽度对齐 FAQ */
+            margin: 120px auto;
+            padding: 0 24px;
+            text-align: center;
+        }
+
+        .contact-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 48px;
+            color: var(--brand-blue, rgb(0, 22, 102));
+            font-style: italic;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .contact-subtitle {
+            font-size: 18px;
+            color: var(--text-gray);
+            margin-bottom: 40px;
+        }
+
+        .contact-links {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            /* 间距对齐 FAQ */
+        }
+
+        .contact-card {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            padding: 24px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .contact-card:hover {
+            background: #e4dfd8;
+        }
+
+        .contact-label {
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        .contact-value {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        .download {
+            display: inline-block;  /* 或 block */
+            width: 24px;            /* 设置具体宽度 */
+            height: 24px;           /* 设置具体高度 */
+            background-image: url("static/image/download.png");
+            background-size: cover;  /* 让图片适应容器 */
+            background-repeat: no-repeat;
+        }
+        
+
+        /* =========================================
+           音乐播放器样式
+           ========================================= */
+           .music-player-card {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #ffffff;
+            padding: 16px;
+            border-radius: 12px;
+            color: #333333;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 8px;
+            width: 240px; /* 比原来的卡片稍微大一点点 */
+            transition: transform 0.2s ease;
+        }
+
+        .music-player-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .music-icon {
+            width: 16px;           /* 设置宽度，可以和 font-size 一致 */
+            height: 16px;          /* 设置高度 */
+            font-size: 16px;
+            background-image: url("static/image/music.png");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
+
+        .music-title {
+            font-size: 14px;
+            font-weight: 600;
+            white-space: nowrap; /* 强制不换行 */
+            overflow: hidden;    /* 溢出隐藏 */
+            text-overflow: ellipsis; /* 装不下的名字用省略号代替 */
+            flex: 1;
+            cursor: default;
+        }
+
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .music-controls button {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--text-gray);
+            cursor: pointer;
+            transition: color 0.2s, transform 0.1s;
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .music-controls button:hover {
+            color: var(--primary-orange);
+        }
+
+        .music-controls button:active {
+            transform: scale(0.9); /* 点击时的微小缩放反馈 */
+        }
+
+        /* =========================================
+           右下角固定悬浮组件 (Fixed Floating Elements)
+           ========================================= */
+           .fixed-bottom-right {
+            /* 核心属性：固定定位 */
+            position: fixed;
+            bottom: 24px;   /* 距离底部 24px */
+            right: 24px;    /* 距离右侧 24px */
+            
+            /* 使用 Flexbox 让内部元素垂直排列并靠右对齐 */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;      /* 元素之间的间距 */
+            
+            /* 确保层级最高，不会被页面的其他内容遮挡 */
+            z-index: 9999;
+        }
+
+        /* 小按钮样式 */
+        .framer-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            color: #333333;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* 添加阴影使其浮起来 */
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .framer-badge:hover {
+            transform: translateY(-2px); /* 悬停时微微上移 */
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        /* 顶部带有图片的推广卡片样式 */
+        .framer-promo-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #333333;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 8px; /* 和下方按钮拉开一点距离 */
+            transition: transform 0.2s ease;
+        }
+        
+        .framer-promo-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .promo-img {
+            width: 64px;
+            height: 48px;
+            border-radius: 6px;
+            object-fit: cover;
+            background: #eee;
+        }
+
+        .promo-text {
+            font-size: 13px;
+            line-height: 1.5;
+            padding-right: 8px;
+        }
+        .stats-info {
+        background-color: #ffffff;
+        padding: 8px 16px;
+        border-radius: 20px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        font-size: 13px;
+        color: #555;
+        /* 禁止选中文字，体验更好 */
+        user-select: none;
+        }
+
+
+
+
+        /* =========================================
+           Footer 区域 (居中对齐)
+           ========================================= */
+        .footer {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            gap: 16px;
+        }
+
+        .footer-logo {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 28px;
+            line-height: 1.2;
+            color: var(--primary-orange);
+            margin-bottom: 8px;
+        }
+
+        .footer-logo i {
+            color: var(--primary-orange);
+        }
+
+        .footer-center {
+            font-size: 16px;
+            color: var(--text-gray);
+        }
+
+        .footer-right {
+            font-size: 16px;
+            color: var(--text-gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-right:hover {
+            color: var(--text-dark);
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 1024px) {
+            .floating-img {
+                display: none;
+            }
+
+            .hero-title {
+                font-size: 56px;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .works-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 42px;
+            }
+
+            .section-title {
+                font-size: 36px;
+            }
+
+            .nav {
+                padding: 24px;
+            }
+
+            .work-img-wrapper {
+                height: 350px;
+            }
+
+            .marquee-item {
+                width: 220px;
+                height: 300px;
+            }
+
+            .faq-title,
+            .contact-title {
+                font-size: 42px;
+            }
+
+            .contact-card {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .stack-container {
+                width: 98vw;
+                min-width: 0;
+                height: 280px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="nav">
+        <div class="nav-left"><a href="#works">Works</a></div>
+        <div class="nav-center"><a href="/" class="nav-logo">The Station&<br>Agent</a></div>
+        <div class="nav-right" id="navRight">
+            <span id="authLinks">
+                <a href="/login">登录</a>
+                <a href="/register">注册</a>
+            </span>
+            <span id="userInfo" style="display: none;">
+                <span id="userName" style="margin-right: 16px; font-weight: 500;"></span>
+                <a href="/logout">登出</a>
+            </span>
+        </div>
+    </nav>
+
+    <section class="hero-container">
+        <img src="https://picsum.photos/seed/picsum1/400/500" class="floating-img img-1" alt="portfolio abstract">
+        <img src="https://picsum.photos/seed/picsum2/400/500" class="floating-img img-2" alt="portfolio abstract">
+        <img src="https://picsum.photos/seed/picsum3/500/300" class="floating-img img-3" alt="portfolio abstract">
+        <img src="https://picsum.photos/seed/picsum4/500/400" class="floating-img img-4" alt="portfolio abstract">
+
+        <div class="hero-content">
+            <svg width="400" height="100" viewBox="0 0 400 100">
+                <defs>
+                    <!-- 起点(20,70) → 中点(200,30) → 终点(380,70)，完全对称 -->
+                    <path id="curveUp" d="M 20,70 Q 200,20 380,70" />
+                </defs>
+                <text font-size="18" font-weight="500" fill="var(--text-dark)">
+                    <textPath href="#curveUp" startOffset="50%" text-anchor="middle">
+                        The Station Agent
+                    </textPath>
+                </text> 
+            </svg>
+            <h1 class="hero-title">Sanctuary& <br>for the soul</h1>
+            <div class="hero-subtitle">you can count on us!</div>
+            <a class="cta-btn" href="/playground">Playground <span>↗</span></a>
+        </div>
+    </section>
+
+    <div class="works-intro">
+        <img src="/static/image/TelescopeIcon.png" alt="Telescope Icon" class="intro-icon">
+        <div class="intro-label">The energy cards they left behind</div>
+    </div>
+    <div class="stack-container" id="stack">
+        <div class="card"
+            style="background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)), url('/static/image/card01.png')">
+            <h2>清宁</h2>
+            <p>温柔海浪轻拂沙滩，阳光在海面细碎闪烁，海风携着松弛，漫过整片浅滩。</p>
+        </div>
+        <div class="card"
+            style="background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)), url('/static/image/card02.png')">
+            <h2>灵动</h2>
+            <p>清冽溪水绕青山流淌，岸边野花盛放，小鱼穿梭水中，满是山野鲜活气息。</p>
+        </div>
+        <div class="card"
+            style="background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)), url('/static/image/card03.png')">
+            <h2>暖柔</h2>
+            <p>落日晕染整片稻田，晚风拂过金色稻浪，暮色温柔包裹着丰收的暖意。</p>
+        </div>
+        <div class="card"
+            style="background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)), url('/static/image/card04.png')">
+            <h2>缱绻</h2>
+            <p>粉白樱瓣缓缓飘落，繁花层层叠叠，勾勒出春日温柔又梦幻的浪漫景致。</p>
+        </div>
+        <div class="card"
+            style="background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)), url('/static/image/card05.png')">
+            <h2>静谧</h2>
+            <p>湖水澄澈如镜，映着蓝天白云，微风拂过，漾开层层轻柔细碎的涟漪。</p>
+        </div>
+        <div class="card"
+            style="background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)), url('/static/image/card06.png')">
+            <h2>璀璨</h2>
+            <p>夏夜星空浩瀚无垠，萤火在草丛点点闪烁，晚风轻扬，藏着独属于夜晚的浪漫。</p>
+        </div>
+        <div class="card"
+            style="background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)), url('/static/image/card07.png')">
+            <h2>绮梦</h2>
+            <p>落日将天际染成粉紫色，霞光穿透云层漫洒，黄昏温柔又治愈，如梦似幻。</p>
+        </div>
+        <div class="card"
+            style="background-image: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)), url('/static/image/card08.png')">
+            <h2>朦胧</h2>
+            <p>清晨薄雾漫过林间，阳光穿透枝叶洒落光斑，草木清新，满是静谧治愈感。</p>
+        </div>
+
+    </div>
+
+    <div class="works-intro">
+        
+        <div class="intro-label">Sneak peak of my works</div>
+    </div>
+
+    <div class="marquee-container">
+        <div class="marquee-track" id="marqueeTrack">
+            <img src="/static/image/img_1.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_2.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_3.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_4.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_5.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_6.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_7.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_8.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_9.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_10.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_11.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_12.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_13.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_14.png"
+                class="marquee-item" alt="work">
+            <img src="/static/image/img_15.png"
+                class="marquee-item" alt="work">
+        </div>
+    </div>
+
+    <section class="works-section">
+        <div class="section-header">
+            <img src="/static/image/Spacecraft.png" alt="Telescope Icon" class="intro-icon">
+            <h2 class="section-title">Literary Appreciation</h2>
+            <p class="section-desc">This article might give you a different perspective.</p>
+        </div>
+
+        <div class="works-grid">
+            <a href="#" class="work-item">
+                <div class="work-img-wrapper"><img
+                        src="/static/image/literary01.png"
+                        alt="FinFlow"></div>
+                <div class="work-info">
+                    <h3>阿尔贝・加缪</h3>
+                    <p>一切特立独行的人格，都意味着强大。</p>
+                    <p>重要的不是治愈，而是带着病痛活下去。</p>
+                    <p>除了没用的肉体自杀和精神逃避，第三种自杀的态度是坚持奋斗，对抗人生的荒谬。</p>
+                    <p>诞生在一个荒谬的世界上的人的唯一真正的职责是活下去，是意识到自己的生命、自己的反抗、自己的自由。</p>
+                    <p>人可以要求死亡。因为看透了生活，那就什么都无所谓了。一个人经历、遭受了种种不幸，他承受着这些不幸，安于自己的命运。</p>
+                </div>
+            </a>
+            <a href="#" class="work-item">
+                <div class="work-img-wrapper"><img
+                        src="/static/image/literary02.png"
+                        alt="LaunchPad"></div>
+                <div class="work-info">
+                    <h3>加夫列尔·何塞·贾西亚·马奎斯</h3>
+                    <p>每一个生命都有灵魂 只是怎样唤醒他们</p>
+                    <p>比起有人左右情绪的日子，我更喜欢无人问津的时候。</p>
+                    <p>别人也许会同情，也许会蹉叹，但永远不会清楚，你的伤口溃烂到何种境地。</p>
+                    <p>一个人的成熟不是多善于与人交往，而是善于与孤独和平相处，孤单之前是迷茫，孤独过后便是成长。</p>
+                    <p>过去都是假的，回忆是一条没有归途的路，以往的一切春天都无法复原，即使最狂热最坚贞的爱情，归根结底也不过是一种瞬息即逝的现实，唯有孤独永恒。</p>
+                </div>
+            </a>
+            <a href="#" class="work-item">
+                <div class="work-img-wrapper"><img
+                        src="/static/image/literary03.png"
+                        alt="HealthSync"></div>
+                <div class="work-info">
+                    <h3>汪曾祺</h3>
+                    <p>在黑白里温柔地爱彩色，在彩色里朝圣黑白。</p>
+                    <p>泰山既不能进入我的内部，我也不能外化为泰山。山自山，我自我，不能达到物我同一，山即是我，我即是山。</p>
+                    <p>栀子花粗粗大大，又香得掸都掸不开，于是为文雅人不取，以为品格不高。栀子花说:“去你妈的，我就是要这样香，香得痛痛快快，你们他妈的管得着吗!</p>
+                </div>
+            </a>
+            <a href="#" class="work-item">
+                <div class="work-img-wrapper"><img
+                        src="/static/image/literary04.png"
+                        alt="TalentBridge"></div>
+                <div class="work-info">
+                    <h3>泰戈尔</h3>
+                    <p>我听见回声，来自山谷和心间；以寂寞的镰刀收割空旷的灵魂；不断地重复决绝，又重复幸福；终有绿洲摇曳在沙漠；我相信自己，生来如同璀璨的夏日之花，不凋不败，妖冶如火，承受心跳的负荷和呼吸的累赘，乐此不疲！
+我听见音乐，来自月光和胴体；辅极端的诱饵捕获飘渺的唯美；一生充盈着激烈，又充盈着纯然；总有回忆贯穿于世间；我相信自己，死时如同静美的秋日落叶，不盛不乱，姿态如烟，即便枯萎也保留丰肌清骨的傲然，玄之又玄！</p>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <section class="faq-section">
+        <div class="faq-header">
+            <img src="/static/image/Faq.png" alt="Faq" class="intro-icon">
+            <h2 class="faq-title">FAQs</h2>
+            <p class="faq-subtitle">Got questions? I've got answers.</p>
+        </div>
+
+        <div class="faq-list">
+    <div class="faq-item">
+        <div class="faq-question">What is your typical counseling process? <span class="faq-icon">+</span></div>
+        <div class="faq-answer">
+            <p>Our process usually begins with deep listening and psychological assessment to fully understand your emotional needs and core struggles. This is followed by a tailored cognitive intervention and emotional healing plan, providing continuous support and feedback.</p>
+        </div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-question">How long does a typical support cycle take? <span class="faq-icon">+</span></div>
+        <div class="faq-answer">
+            <p>Depending on individual circumstances and specific needs, a typical psychological support and self-reconstruction cycle takes anywhere from 4 to 8 weeks. We flexibly adjust the pace based on your actual recovery progress.</p>
+        </div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-question">Do you provide clinical medication? <span class="faq-icon">+</span></div>
+        <div class="faq-answer">
+            <p>We focus primarily on psychological counseling, emotional support, and cognitive-behavioral interventions. For complex mental health conditions requiring clinical intervention or medication, we will recommend and assist you in connecting with professional psychiatric institutions.</p>
+        </div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-question">Can you help with severe workplace or academic anxiety? <span class="faq-icon">+</span></div>
+        <div class="faq-answer">
+            <p>Absolutely. We have helped many individuals in high-pressure environments process their emotions and rebuild their inner peace, effectively reducing the anxiety and mental burnout caused by workplace challenges and academic stress.</p>
+        </div>
+    </div>
+    <div class="faq-item">
+        <div class="faq-question">How do I get started? <span class="faq-icon">+</span></div>
+        <div class="faq-answer">
+            <p>Simply reach out via email or leave a message on our website! We can schedule a relaxed 30-minute intro chat to listen to your thoughts, discuss your needs, and see if we are the right safe haven for you.</p>
+        </div>
+    </div>
+</div>
+    </section>
+
+    <section class="contact-section">
+        <img src="/static/image/Phone.png" alt="Phone" class="intro-icon">
+        <h2 class="contact-title">Ready to build<br>something amazing?</h2>
+        <p class="contact-subtitle">I'd love to connect with you!</p>
+
+        <div class="contact-links">
+            <a href="https://mail.qq.com/" class="contact-card">
+                <span class="contact-label">Email</span>
+                <span class="contact-value">1915033836@qq.com</span>
+            </a>
+            <a href="https://linkedin.com/in/yi-bo-xu-315b2340b" class="contact-card">
+                <span class="contact-label">LinkedIn</span>
+                <span class="contact-value">linkedin.com/in/TheStation</span>
+            </a>
+            <a href="https://weibo.com/u/7792616649" class="contact-card">
+                <span class="contact-label">Website</span>
+                <span class="contact-value">website/TheStation</span>
+            </a>
+            <a href="https://mp.weixin.qq.com/mp/profile_ext?action=home&__biz=MzkxODcyNDY1OQ==" class="contact-card">
+                <span class="contact-label">WeChat Official Account</span>
+                <span class="contact-value">WeChat/TheStation</span>
+            </a>
+            <a href="#" class="contact-card">
+                <span class="contact-label">Download this template</span>
+                <span class="download"></span>
+            </a>
+        </div>
+    </section>
+    <div class="fixed-bottom-right">
+        <div class="music-player-card">
+            <div class="music-info">
+                <div class="music-icon"></div>
+                <div class="music-title" id="musicTitle">...</div>
+            </div>
+            <div class="music-controls">
+                <button id="prevBtn" title="上一首">⏮</button>
+                <button id="playBtn" title="播放/暂停">▶</button>
+                <button id="nextBtn" title="下一首">⏭</button>
+            </div>
+            <audio id="audioPlayer" src=""></audio>
+        </div>
+    
+        <a href="#" class="framer-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 0L24 12H12V24L0 12H12V0Z" />
+            </svg>
+            我有心事想对她说
+        </a>
+        <div class="floating-item stats-info">
+        在线人数：<span id="onlineCount">...</span>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-logo">
+            <i>The Station&</i> <br><i>Agent</i>
+        </div>
+        <div class="footer-center">© 2026</div>
+        <a href="#" class="footer-right">Designed by Neueframe</a>
+    </footer>
+
+
+
+
+    <script>
+        // 检查用户登录状态
+        async function checkUserStatus() {
+            try {
+                const response = await fetch('/user-info');
+                const data = await response.json();
+                const authLinks = document.getElementById('authLinks');
+                const userInfo = document.getElementById('userInfo');
+                const userName = document.getElementById('userName');
+
+                if (data.logged_in) {
+                    authLinks.style.display = 'none';
+                    userInfo.style.display = 'inline';
+                    userName.textContent = `欢迎, ${data.username}!`;
+                } else {
+                    authLinks.style.display = 'inline';
+                    userInfo.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('检查用户状态失败:', error);
+            }
+        }
+
+        // 页面加载时检查用户状态
+        checkUserStatus();
+    </script>
+
+    <script>
+        // 横向滚动动画
+        const marqueeTrack = document.getElementById('marqueeTrack');
+        if (marqueeTrack) {
+            const animation = marqueeTrack.animate(
+                [{ transform: 'translateX(0%)' }, { transform: 'translateX(-50%)' }],
+                { duration: 30000, iterations: Infinity, easing: 'linear' }
+            );
+            marqueeTrack.addEventListener('mouseenter', () => animation.updatePlaybackRate(0.5));
+            marqueeTrack.addEventListener('mouseleave', () => animation.updatePlaybackRate(1));
+        }
+
+        // 卡片堆叠交互
+        const stack = document.getElementById('stack');
+        if (stack) {
+            let cards = Array.from(stack.children);
+            let startX = 0, currentX = 0, isDragging = false;
+
+            function updateCardStyles() {
+                cards.forEach((card, i) => {
+                    if (i === 0) card.setAttribute('data-index', '0');
+                    else if (i === 1) card.setAttribute('data-index', '1');
+                    else if (i === 2) card.setAttribute('data-index', '2');
+                    else card.setAttribute('data-index', 'hidden');
+                });
+            }
+
+            function init() {
+                updateCardStyles();
+                if (cards[0]) {
+                    cards[0].addEventListener('mousedown', onDragStart);
+                    cards[0].addEventListener('touchstart', onDragStart, { passive: true });
+                }
+            }
+
+            function onDragStart(e) {
+                isDragging = true;
+                startX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+                cards[0].style.transition = 'none';
+                document.addEventListener('mousemove', onDragMove);
+                document.addEventListener('touchmove', onDragMove, { passive: false });
+                document.addEventListener('mouseup', onDragEnd);
+                document.addEventListener('touchend', onDragEnd);
+            }
+
+            function onDragMove(e) {
+                if (!isDragging) return;
+                currentX = (e.type === 'touchmove' ? e.touches[0].clientX : e.clientX) - startX;
+                cards[0].style.transform = `translateX(${currentX}px) rotate(${currentX / 20}deg)`;
+            }
+
+            function onDragEnd() {
+                if (!isDragging) return;
+                isDragging = false;
+                const topCard = cards[0];
+                topCard.style.transition = 'transform 0.6s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.4s ease';
+
+                if (Math.abs(currentX) > 150) {
+                    const direction = currentX > 0 ? 1 : -1;
+                    topCard.style.transform = `translateX(${direction * 600}px) rotate(${direction * 45}deg)`;
+                    topCard.style.opacity = '0';
+
+                    setTimeout(() => {
+                        topCard.removeEventListener('mousedown', onDragStart);
+                        topCard.removeEventListener('touchstart', onDragStart);
+                        stack.appendChild(topCard);
+                        topCard.style.transform = '';
+                        topCard.style.opacity = '';
+                        cards = Array.from(stack.children);
+                        init();
+                    }, 300);
+                } else {
+                    topCard.style.transform = '';
+                }
+                document.removeEventListener('mousemove', onDragMove);
+                document.removeEventListener('mouseup', onDragEnd);
+                document.removeEventListener('touchmove', onDragMove);
+                document.removeEventListener('touchend', onDragEnd);
+                currentX = 0;
+            }
+            init();
+        }
+
+        // FAQs 折叠面板交互
+        const faqItems = document.querySelectorAll('.faq-item');
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                // 可选：点击展开当前项时，收起其他项
+                // faqItems.forEach(i => { if(i !== item) i.classList.remove('active'); });
+                item.classList.toggle('active');
+            });
+        });
+
+        // =========================================
+        // 音乐播放器逻辑
+        // =========================================
+
+        // 注意：请在这里填入你 home/music/ 文件夹下实际存在的音乐文件名
+        const musicList = [
+            '周杰伦-蒲公英的约定.flac',
+            '周杰伦-烟花易冷.flac',
+            'song3.mp3'
+        ];
+        // 相对路径，确保你的 HTML 文件和 home 文件夹在相对层级上是正确的
+        const basePath = '/static/music/';
+
+        // 随机选择初始音乐
+        let currentIndex = Math.floor(Math.random() * musicList.length);
+
+        const audioPlayer = document.getElementById('audioPlayer');
+        const playBtn = document.getElementById('playBtn');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const musicTitle = document.getElementById('musicTitle');
+
+        // 加载音乐信息
+        function loadMusic(index) {
+            const fileName = musicList[index];
+            audioPlayer.src = basePath + fileName;
+
+            // 去掉后缀名 (.mp3) 让显示更美观
+            const displayName = fileName.replace(/\.[^/.]+$/, "");
+            musicTitle.textContent = displayName;
+            musicTitle.title = displayName; // 鼠标悬浮时可以显示完整名字
+        }
+
+        // 播放音乐
+        function playMusic() {
+            audioPlayer.play();
+            playBtn.textContent = '⏸'; // 切换为暂停图标
+        }
+
+        // 暂停音乐
+        function pauseMusic() {
+            audioPlayer.pause();
+            playBtn.textContent = '▶'; // 切换为播放图标
+        }
+
+        // 播放/暂停按钮点击事件
+        playBtn.addEventListener('click', () => {
+            if (audioPlayer.paused) {
+                playMusic();
+            } else {
+                pauseMusic();
+            }
+        });
+
+        // 上一首
+        prevBtn.addEventListener('click', () => {
+            // 实现循环切换
+            currentIndex = (currentIndex - 1 + musicList.length) % musicList.length;
+            loadMusic(currentIndex);
+            playMusic();
+        });
+
+        // 下一首
+        nextBtn.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % musicList.length;
+            loadMusic(currentIndex);
+            playMusic();
+        });
+
+        // 音乐播放结束后自动切换下一首
+        audioPlayer.addEventListener('ended', () => {
+            nextBtn.click();
+        });
+        // =========================================
+        // ✨ 在线人数统计逻辑
+        // =========================================
+
+        const onlineCountElement = document.getElementById('onlineCount');
+
+        async function fetchOnlineCount() {
+            if (!onlineCountElement) return; // 如果找不到元素就不执行
+
+            try {
+                // 请求你刚刚在 Flask 后端写好的 API
+                const response = await fetch('/api/online-users');
+
+                if (response.ok) {
+                    const data = await response.json();
+                    // 将获取到的数字更新到页面上
+                    onlineCountElement.textContent = data.online;
+                }
+            } catch (error) {
+                console.error('获取在线人数失败:', error);
+            }
+        }
+
+        // 页面刚加载时立刻获取一次
+        fetchOnlineCount();
+
+        // 设定定时器，每 15000 毫秒 (15秒) 悄悄向后端请求一次最新数据
+        setInterval(fetchOnlineCount, 15000);
+
+        // 页面加载时初始化
+        loadMusic(currentIndex);
+
+
+    </script>
+</body>
+
+</html>
