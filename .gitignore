@@ -1,1 +1,33 @@
+# 环境变量敏感信息
+.env
+.env.local
+.env.*.local
+
+# Python 相关
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+dist/
+build/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# 操作系统
+.DS_Store
+Thumbs.db
+
+# 静态文件
 /static/image/card07.png
+/static/uploads/
+
+# 数据库
+/database/data/
+*.db

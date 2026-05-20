@@ -9,16 +9,21 @@ import random
 from datetime import datetime
 from flask_mail import Mail, Message
 from datetime import datetime, timedelta
+from dotenv import load_dotenv  # ✨ 新增：加载环境变量
+
+# ✨ 新增：从 .env 文件加载环境变量
+load_dotenv()
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-change-this'
+# ✨ 修改：从环境变量读取 SECRET_KEY，提供默认值防止缺失
+app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
 
-# 配置邮件服务器 (以 QQ 邮箱为例，需要开启 SMTP 服务并获取授权码)
-app.config['MAIL_SERVER'] = 'smtp.qq.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = '1626521893@qq.com'
-app.config['MAIL_PASSWORD'] = 'lpcoauuqdwlgecid' # 这里填 SMTP 授权码，不是登录密码
+# ✨ 修改：从环境变量读取邮件配置
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.qq.com')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', '465'))
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'True').lower() == 'true'
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME', '1626521893@qq.com')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD', 'lpcoauuqdwlgecid')
 mail = Mail(app)
 
 # ✨ 新增：配置文件上传目录和允许的格式
@@ -30,9 +35,9 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'mp3', 'wav', 'mp4', 'webm'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-# MongoDB 连接
-MONGO_URI = 'mongodb://localhost:27017/'
-DATABASE_NAME = 'station_agent_db'
+# ✨ 修改：从环境变量读取 MongoDB 配置
+MONGO_URI = os.getenv('MONGO_URI', 'mongodb://localhost:27017/')
+DATABASE_NAME = os.getenv('DATABASE_NAME', 'station_agent_db')
 
 try:
     client = MongoClient(MONGO_URI, serverSelectionTimeoutMS=5000)
@@ -181,7 +186,9 @@ def send_verification_code():
 
     # 发送邮件
     try:
-        msg = Message("您的注册验证码", sender="1626521893@qq.com", recipients=[email])
+        # ✨ 修改：使用环境变量中的邮箱地址
+        sender_email = os.getenv('MAIL_USERNAME', '1626521893@qq.com')
+        msg = Message("您的注册验证码", sender=sender_email, recipients=[email])
         msg.body = f"欢迎注册 The Station& Agent！您的验证码是：{code}。该验证码在5分钟内有效，请勿泄露给他人。"
         mail.send(msg)
         return jsonify({'success': True})
@@ -602,4 +609,9 @@ def manage_user(user_id):
             return jsonify({'success': False, 'message': str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True, host='localhost', port=5000)
+    # ✨ 修改：从环境变量读取 host 和 port，便于部署
+    flask_host = os.getenv('FLASK_HOST', 'localhost')
+    flask_port = int(os.getenv('FLASK_PORT', '5000'))
+    flask_debug = os.getenv('FLASK_ENV', 'development') == 'development'
+    
+    app.run(debug=flask_debug, host=flask_host, port=flask_port)
