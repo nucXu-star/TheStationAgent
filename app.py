@@ -15,15 +15,26 @@ from dotenv import load_dotenv  # ✨ 新增：加载环境变量
 load_dotenv()
 
 app = Flask(__name__)
-# ✨ 修改：从环境变量读取 SECRET_KEY，提供默认值防止缺失
-app.secret_key = os.getenv('SECRET_KEY', 'dev-secret-key-change-in-production')
+# ✨ 修改：从环境变量读取 SECRET_KEY，生产环境必须设置
+secret_key = os.getenv('SECRET_KEY')
+if not secret_key:
+    raise RuntimeError('❌ 错误：必须设置 SECRET_KEY 环境变量（生产环境不能使用默认值）')
+app.secret_key = secret_key
 
-# ✨ 修改：从环境变量读取邮件配置
+# ✨ 安全配置：HTTPS 环境下的 Cookie 安全设置
+app.config['SESSION_COOKIE_SECURE'] = os.getenv('SESSION_COOKIE_SECURE', 'True').lower() == 'true'
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # 防止 JavaScript 访问
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'  # CSRF 保护
+app.config['PERMANENT_SESSION_LIFETIME'] = 2592000  # 30 天
+
+# ✨ 修改：从环境变量读取邮件配置，不提供默认值以防止凭证泄露
 app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER', 'smtp.qq.com')
 app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', '465'))
 app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'True').lower() == 'true'
-app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME', '1626521893@qq.com')
-app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD', 'lpcoauuqdwlgecid')
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+if not app.config['MAIL_USERNAME'] or not app.config['MAIL_PASSWORD']:
+    print('⚠️ 警告：邮件配置不完整，邮件功能不可用')
 mail = Mail(app)
 
 # ✨ 新增：配置文件上传目录和允许的格式
@@ -153,7 +164,7 @@ def register():
             'password': generate_password_hash(password),
             'created_at': datetime.now(),
             'updated_at': datetime.now(),
-            "role": "admin"
+            "role": "user"  # ✨ 修复：新用户默认为普通用户，不是 admin！
         }
 
         try:
@@ -187,7 +198,9 @@ def send_verification_code():
     # 发送邮件
     try:
         # ✨ 修改：使用环境变量中的邮箱地址
-        sender_email = os.getenv('MAIL_USERNAME', '1626521893@qq.com')
+        sender_email = os.getenv('MAIL_USERNAME')
+        if not sender_email:
+            return jsonify({'success': False, 'message': '邮件服务未配置，请稍候重试'})
         msg = Message("您的注册验证码", sender=sender_email, recipients=[email])
         msg.body = f"欢迎注册 The Station& Agent！您的验证码是：{code}。该验证码在5分钟内有效，请勿泄露给他人。"
         mail.send(msg)
@@ -610,8 +623,13 @@ def manage_user(user_id):
 
 if __name__ == '__main__':
     # ✨ 修改：从环境变量读取 host 和 port，便于部署
-    flask_host = os.getenv('FLASK_HOST', 'localhost')
+    flask_host = os.getenv('FLASK_HOST', '0.0.0.0')
     flask_port = int(os.getenv('FLASK_PORT', '5000'))
-    flask_debug = os.getenv('FLASK_ENV', 'development') == 'development'
+    flask_debug = os.getenv('FLASK_DEBUG', '0').lower() in ('1', 'true', 'yes')
+    
+    # ⚠️ 生产环境中，DEBUG 必须为 False
+    if flask_debug and os.getenv('FLASK_ENV') == 'production':
+        print('⚠️ 警告：生产环境不应启用 DEBUG 模式！将强制禁用。')
+        flask_debug = False
     
     app.run(debug=flask_debug, host=flask_host, port=flask_port)

@@ -6,13 +6,13 @@ After=network.target mongodb.service
 Type=notify
 User=www-data
 Group=www-data
-WorkingDirectory=/www/wwwroot/www.thestationagentheart.co
+WorkingDirectory=/root/thestationagentblue.fun
 
 # ⭐ 加载环境变量（关键配置）
-EnvironmentFile=/www/wwwroot/www.thestationagentheart.co/.env
+EnvironmentFile=/root/thestationagentblue.fun/.env
 
 # 虚拟环境 Python 解释器路径
-Environment="PATH=/www/wwwroot/www.thestationagentheart.co/.venv/bin"
+Environment="PATH=/root/thestationagentblue.fun/.venv/bin"
 
 # Gunicorn 启动命令
 # -w 3: 3 个工作进程
@@ -20,7 +20,7 @@ Environment="PATH=/www/wwwroot/www.thestationagentheart.co/.venv/bin"
 # --timeout 120: 请求超时时间 120 秒
 # --access-logfile -: 访问日志输出到 systemd journal
 # --error-logfile -: 错误日志输出到 systemd journal
-ExecStart=/www/wwwroot/www.thestationagentheart.co/.venv/bin/gunicorn \
+ExecStart=/root/thestationagentblue.fun/.venv/bin/gunicorn \
     -w 3 \
     -b 127.0.0.1:8000 \
     --timeout 120 \
@@ -39,4 +39,3 @@ SyslogIdentifier=the-station-agent
 
 [Install]
 WantedBy=multi-user.target
-
